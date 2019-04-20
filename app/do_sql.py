@@ -3,7 +3,7 @@ import mysql.connector
 class do_sql():
     def __init__(self):
         self.conn=mysql.connector.connect(host='localhost',user='root',passwd="Atobefuji.900209", port=3306, db='purchase')
-        self.cursor=conn.cursor()
+        self.cursor=self.conn.cursor()
     
     def send_cmd(self,cmd,err):
         try:
