@@ -1,13 +1,27 @@
 #-*- coding:utf-8
-from app import app
-from flask import json, jsonify,request
-from app import do_sql
 
-s=do_sql.do_sql()
+from app import app
+from flask import json, jsonify,request,render_template
+from app.process.express import Express
+import hashlib
+
+#from app import do_sql
+
+#s=do_sql.do_sql()
 @app.route('/')
 @app.route('/index')
 def index():
-    return "Hello World"
+    return render_template("Hello World")
+
+@app.route('/express')
+def express():
+    name_list=[]       
+    a=Express('13162580787','atobefuji')
+    list = a.get_history_list('4-22')
+    for i in list:
+        b = a.get_info(i)
+        name_list.append(b)
+    return render_template('express.html', name_list=name_list)
 
 @app.route('/getlist', methods=['POST'])
 def form_data():
@@ -19,12 +33,22 @@ def form_data():
 
 @app.route('/wx', methods=['GET', 'POST'])
 def wx():
-    print '$#'
-    data = request.get_data()
-    data = json.loads(data.decode("utf-8"))
-    print type(data)
-    print data
-    return jsonify({'status': '0', 'errmsg': u'登录成功！'})
+    print '$#1'
+    signature = request.args.get('signature')
+    timestamp = request.args.get('timestamp')
+    nonce = request.args.get('nonce')
+    echostr = request.args.get('echostr')
+    token='luodanting'
+    list = [token, timestamp, nonce]
+    list.sort()
+    sha1 = hashlib.sha1()
+    map(sha1.update, list)
+    hashcode = sha1.hexdigest()
+    print "handle/GET func: hashcode, signature: ", hashcode, signature
+    if hashcode == signature:
+        return echostr
+    else:
+        return ""
     
 @app.route('/additem',methods=['POST'])
 def add_data():
