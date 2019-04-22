@@ -17,6 +17,15 @@ def form_data():
     print type(json_data)
     return jsonify({'status': '0', 'errmsg': u'登录成功！'})
 
+@app.route('/wx', methods=['GET', 'POST'])
+def wx():
+    print '$#'
+    data = request.get_data()
+    data = json.loads(data.decode("utf-8"))
+    print type(data)
+    print data
+    return jsonify({'status': '0', 'errmsg': u'登录成功！'})
+    
 @app.route('/additem',methods=['POST'])
 def add_data():
     data = request.get_data()
