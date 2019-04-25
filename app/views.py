@@ -13,11 +13,12 @@ import hashlib
 def index():
     return render_template("Hello World")
 
-@app.route('/express')
-def express():
-    name_list=[]       
+@app.route('/express', method=['GET','POST'])
+def express(): 
+    name_list=[]
+    key='4-25'
     a=Express('13162580787','atobefuji')
-    list = a.get_history_list('4-22')
+    list = a.get_history_list(key)
     for i in list:
         b = a.get_info(i)
         name_list.append(b)
