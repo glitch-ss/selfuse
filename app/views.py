@@ -4,6 +4,7 @@ from app import app
 from flask import json, jsonify,request,render_template
 from app.process.express import Express
 import hashlib
+import exceptions
 
 #from app import do_sql
 
@@ -11,18 +12,48 @@ import hashlib
 @app.route('/')
 @app.route('/index')
 def index():
-    return render_template("Hello World")
+    return render_template("index.html")
 
-@app.route('/express', method=['GET','POST'])
+@app.route('/express', methods=['GET','POST'])
 def express(): 
     name_list=[]
-    key='4-25'
-    a=Express('13162580787','atobefuji')
-    list = a.get_history_list(key)
-    for i in list:
-        b = a.get_info(i)
-        name_list.append(b)
+    date=""
+    try:
+        date =  request.args.get('date')
+    except:
+        print 'erro'    
+    #key='05-12'
+    if date is not None and "-" in date:
+        print 'e'
+        a=Express('13162580787','atobefuji')
+        list = a.get_history_list(date)
+        print len(list)
+        for i in list:
+            b = a.get_info(i)
+            name_list.append(b)
     return render_template('express.html', name_list=name_list)
+
+@app.route('/innerexpress', methods=['POST'])
+def innerexpress():
+    name_list=[]
+    date=""
+    try:
+        date = request.form.get('date')
+        print date
+    except Exception, e:
+        print e
+        pass    
+    #key='05-12'
+    print type(date)
+    if date is not None and "-" in date:
+        a=Express('13162580787','atobefuji')
+        list = a.get_history_list(date)
+        print len(list)
+        for i in list:
+            b = a.get_info(i)
+            name_list.append(b)
+    print len(name_list)
+    return jsonify({'name_list':name_list})
 
 @app.route('/getlist', methods=['POST'])
 def form_data():

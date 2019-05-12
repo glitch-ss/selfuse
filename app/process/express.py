@@ -30,6 +30,8 @@ class Express():
             print response.text
     
     def get_history_list(self,date):
+        if date=="":
+            return []
         item_list=[]
         self.s.headers['Content-Length']='29'
         self.s.headers['X-Requested-With']='XMLHTTPRequest'
@@ -45,6 +47,15 @@ class Express():
         for item in result:
             if date in item['date']:
                 item_list.append(item['id'])
+        data= {'action':'history','page':'2'}
+        try:
+            response = self.s.post('https://m.kuaidihelp.com/order/ajax', data=data, allow_redirects = False)
+            result = json.loads(response.text)['data']['list']
+            for item in result:
+                if date in item['date'] and item not in item_list:
+                    item_list.append(item['id'])
+        except Exception, e:
+            print e
         return item_list
     
     def get_info(self,id,t=None):
