@@ -1,3 +1,10 @@
 #search{
-	color:red;
+	margin: 0 auto;
+	margin-top: 20px;
+	width:250px;
+}
+.name_list{
+	margin:0 auto;
+	width:30%;
+
 }
