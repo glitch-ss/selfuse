@@ -1,0 +1,30 @@
+<html lang="en">
+
+<head>
+	<link href="../../static/css/bootstrap.min.css" rel="stylesheet">
+	<link href="../../static/css/add-ons.min.css" rel="stylesheet">
+	<link href="../../static/css/test.css" rel="stylesheet">
+	<script src="../../static/js/jquery/jquery-2.1.1.min.js"></script>
+    <script src="../../static/js/jquery.dataTables.min.js"></script>
+	<script src="../../static/js/bootstrap.min.js"></script>
+	<script src="../../static/js/mk.js"></script>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+	<div id='search'>
+		<input></input>
+		<button>submit</button>
+	</div>
+    <table class='inspect_list table table-bordered table-striped c_table'>
+    	{% for i in inspect_list%}
+    	<tr id='{{ i }}'>
+    		<td>{{ i }}</td>
+    		<td>{{ inspect_list[i] }}</td>
+    		<td><button class='delete'>delete</button></td>
+    	</tr>
+    	{% endfor %}
+    </table>
+</body>
+
+</html>
