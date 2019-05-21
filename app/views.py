@@ -10,6 +10,39 @@ import hashlib
 import time
 import threading
 import exceptions
+price_dict={
+    '北京市':8,
+    '上海市':6,
+    '江苏省':6,
+    '安徽省':6,
+    '浙江省':6,
+    '山东省':8,
+    '广东省':8,
+    '福建省':8,
+    '湖南省':8,
+    '湖北省':8,
+    '江西省':8,
+    '天津市':8,
+    '河南省':8,
+    '河北省':8,
+    '山西省':8,
+    '四川省':8,
+    '陕西省':8,
+    '海南省':8,
+    '重庆市':8,
+    '辽宁省':8,
+    '吉林省':8,
+    '云南省':8,
+    '广西省':8,
+    '贵州省':8,
+    '黑龙江省':8,
+    '宁夏省':10,
+    '青海省':10,
+    '甘肃省':10,
+    '内蒙古省':10,
+    '新疆省':10,
+    '西藏省':10,
+}
 stop_id=[]
 inspect_sephora_list={}
 inspect_mk_list={}
@@ -106,6 +139,7 @@ def mk():
 @app.route('/innerexpress', methods=['POST'])
 def innerexpress():
     name_list=[]
+    price=0
     date=""
     try:
         date = request.form.get('date')
@@ -123,7 +157,10 @@ def innerexpress():
             b = a.get_info(i)
             name_list.append(b)
     print len(name_list)
-    return jsonify({'name_list':name_list})
+    price_list = a.province_list
+    for a in price_list:
+        price += price_dict[a]
+    return jsonify({'name_list':name_list, 'price':price})
 
 @app.route('/getlist', methods=['POST'])
 def form_data():

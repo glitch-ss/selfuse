@@ -11,6 +11,7 @@ class Express():
     def __init__(self,name=None,password=None):
         self.name=name
         self.password=password
+        self.province_list=[]
         self.post_headers={
             'user-agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:65.0) Gecko/20100101 Firefox/65.0',
             'Accept':'application/json, text/plain, */*; q=0.01',
@@ -33,6 +34,7 @@ class Express():
         if date=="":
             return []
         item_list=[]
+        province_list=[]
         self.s.headers['Content-Length']='29'
         self.s.headers['X-Requested-With']='XMLHTTPRequest'
         self.s.headers['Refer']='https://m.kuaidihelp.com/order/openHistory'
@@ -44,9 +46,11 @@ class Express():
         data={'action':'history'}
         response = self.s.post('https://m.kuaidihelp.com/order/ajax', data=data, allow_redirects = False)
         result = json.loads(response.text)['data']['list']
+        self.province_list=[]
         for item in result:
             if date in item['date']:
                 item_list.append(item['id'])
+                self.province_list.append(item['shipping_province'])
         data= {'action':'history','page':'2'}
         try:
             response = self.s.post('https://m.kuaidihelp.com/order/ajax', data=data, allow_redirects = False)
