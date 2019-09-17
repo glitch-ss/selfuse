@@ -1,4 +1,4 @@
-$(document).ready(function(){
+﻿$(document).ready(function(){
 	$('#search button').click(function(){
 	valstr=$('#search input').val()
 	$.ajax({
@@ -7,14 +7,14 @@ $(document).ready(function(){
 		    url: '/innerexpress',
 		    data: {"date": valstr},
 		    dataType: "json",
-		    error: function () { console('err') },
+		    error: function () { console.log('err') },
 		    success: function (data) {
 		        $('.name_list').html("")
 				console.log(data)
 				name_list = data['name_list']
 				price = data['price']
 				console.log(name_list)
-				price_cmd = 'price for the day is: '+ str(price)
+				price_cmd = 'price for the day is: '+ price
 				$('#price').text(price_cmd)
 				for (i in name_list){
 					cmd = "<tr><td>"+name_list[i][0]+"</td><td>"+name_list[i][1]+"</td></tr>"
