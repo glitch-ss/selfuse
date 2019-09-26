@@ -45,9 +45,9 @@ class Express():
         self.s.headers['user-agent']='Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0'
         data={'action':'history'}
         response = self.s.post('https://m.kuaidihelp.com/order/ajax', data=data, allow_redirects = False)
-        result = json.loads(response.text)['data']['list']
+        self.result = json.loads(response.text)['data']['list']
         self.province_list=[]
-        for item in result:
+        for item in self.result:
             if date in item['date']:
                 item_list.append(item['id'])
                 self.province_list.append(item['shipping_province'])
@@ -73,11 +73,22 @@ class Express():
             
         response = self.s.get(url, allow_redirects = False )
         soup=BeautifulSoup(response.text,'html.parser')
-        temp = soup.find_all('span',attrs={'id':'contents'})
-        res.append(temp[0].get_text())
+        temp_number = soup.find_all('span',attrs={'id':'contents'})
+        res.append(temp_number[0].get_text())
         name = soup.find_all('div',attrs={'class':'css-table-common'})[1]
-        a=name.find_all('span',attrs={'class':'w-11'})
-        res.append(a[0].get_text().split('1')[0].strip())
+        weight = soup.find_all('div', attrs={'class':'css-waybill-info'})[0]
+        weight_soup = weight.nextSibling.nextSibling.nextSibling.nextSibling
+        t = weight_soup.contents[3].find_all('div', attrs={'class':'mt-0_5'})[0].get_text()
+        weight = t.split(u'公斤')[0]
+        name_soup = name.find_all('span',attrs={'class':'w-11'})
+        phone_num = name_soup[0].find_all('em')[0].get_text()
+        res.append(name_soup[0].get_text().split('1')[0].strip())
+        res.append(weight)
+        res.append(phone_num)
+        for item in self.result:
+            if id == item['id']:
+                res.append(item['shipping_province'])
+                break
         return res
 
         

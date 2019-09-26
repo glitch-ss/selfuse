@@ -1,0 +1,147 @@
+.table-hover > tbody > tr:hover > td {
+	background-color: #CE8E32;
+}
+.hidden{
+	display:none;
+}
+.error-message{
+	color:red;
+}
+.index-container{
+	width: 100%;
+	
+}
+.navigation{
+	background-color: #333;
+	color:#DDA562;
+	width:100%;
+	float:left;
+}
+.navbar-brand{
+	height:auto;
+	float:left;
+	line-height:20px;
+	padding: 15px 0px 15px 15px;
+	font-size:18px;
+	line-height:20px;
+}
+.logo-home{
+	margin-top:5px;
+	background-image:url("../../pic/symbol-nightwatch.svg");
+	background-size:38px, 41px;
+	height:41px;
+	background-repeat:no-repeat;
+	padding-top:10px;
+	padding-left:50px;
+	color:#fff;
+	font-size:15px;
+}
+.nav-box{
+	margin-left:-15px;
+	margin-top:23px;
+}
+.nav > li > a{
+	padding:10px 9px;
+	font-size:17px;
+	font-weight:300;
+	color:#DDA562;
+}
+.top-section{
+	top-margin:100px;
+	width:100%;
+	background-color:#333;
+	height:auto;
+}
+.container{
+	max-width:1440px;
+	width:auto;
+}
+.error{
+	height:34px;
+}
+.color{
+
+}
+#load{
+	position:relative;
+}
+#submit{
+	position:relative;
+}
+#load .loadfile {
+    position: absolute;
+    font-size: 18px;
+    width:100%;
+    right: 0;
+    top: 0;
+    opacity: 0;
+}
+#load .loadfile:hover{
+	cursor: pointer;
+}
+.index-container .btn-load{
+	background: rgba(206, 142, 50, 1);
+	color:#FFF;
+	border-radius: 10px;
+    padding: 5px 10px 5px 30px;
+    font-size: 13px;
+    overflow-wrap: normal;
+    white-space: normal;
+    width: 100px;
+    height:30px;
+    text-align: left;
+    margin: 10px 5px 49px 0px;
+    font-weight: 400;
+}
+.middle-section .content{
+	margin-top:10px;
+}
+.middle-section{
+	background-color:#1B1614;
+	width:100%;
+	height:auto;
+}
+.result-list{
+	height:100%
+}
+.result-list thead{
+	color:#CE8E32;
+}
+.result-list tbody, .result-list a{
+	color:#f2f2f2;
+}
+.result-list tr{
+	height:40px;
+	overflow:hidden;
+}
+.result-list td div{
+	height:23px;
+	overflow:hidden;
+}
+.result-list td:first-child div{
+	width:100px;
+	overflow:hidden;
+}
+.status:hover span{
+	display:none;
+}
+.status:hover button{
+	display:block!important;
+}
+.status:hover{
+	padding:3px;
+}
+.btn-dark:hover, .btn-dark{
+	color: #fff;
+	background-color: #23272b;
+	border-color: #1d2124;
+}
+.save{
+	width:150px;
+	height:40px;
+}
+#save{
+	width: 90px;
+    height:30px
+}
+
