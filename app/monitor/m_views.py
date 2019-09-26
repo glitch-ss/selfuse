@@ -66,7 +66,7 @@ def Sephora():
                 nordstrom_list.remove(ID)
             return jsonify({'status': 'success'})
     else:
-        return render_template('Sephora.html', sephora_list=config_output(sephora_list), nordstrom_list=config_output(nordstrom_list))
+        return render_template('sephora.html', sephora_list=config_output(sephora_list), nordstrom_list=config_output(nordstrom_list))
 
 @app.route('/namelist', methods=['GET', 'POST'])
 def name_list():

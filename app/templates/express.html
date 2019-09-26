@@ -7,6 +7,8 @@
 	<script src="../../static/js/jquery/jquery-2.1.1.min.js"></script>
     <script src="../../static/js/jquery.dataTables.min.js"></script>
 	<script src="../../static/js/bootstrap.min.js"></script>
+    <script src="../../static/js/shim.min.js"></script>
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
 	<script src="../../static/js/test.js"></script>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -14,14 +16,13 @@
 <body>
 	<div id='search'>
 		<input></input>
-		<button>submit</button>
+		<button id="search_button">submit</button>
+        <button id="download" downdload="test.txt">download</button>
 	</div>
     <div id='price'></div>
     <table class='name_list table table-bordered table-striped c_table'>
     	{% for i in name_list%}
     	<tr >
-    		<td>{{ i[0] }}</td>
-    		<td>{{ i[1] }}</td>
     	</tr>
     	{% endfor %}
     </table>
