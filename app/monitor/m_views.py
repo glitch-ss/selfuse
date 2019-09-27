@@ -3,8 +3,7 @@ from flask import json, jsonify, request, render_template
 from app.monitor.sephora import *
 from app.monitor.sephora import pSephora, sephora_list
 from app.monitor.Nordstrom import pNordstrom, nordstrom_list
-import os
-import hashlib
+from app.monitro.ippool import ippool
 import time
 from threading import Thread
 from werkzeug.utils import secure_filename
@@ -12,6 +11,9 @@ import exceptions
 
 sephora_name_list={}
 nordstrom_name_list={}
+ip_p = ippool()
+ip_p.process()
+my_proxy = ip_p.get_one()
 
 def config_output(list_dict):
     output = []
