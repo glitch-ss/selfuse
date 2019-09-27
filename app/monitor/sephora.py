@@ -106,7 +106,7 @@ class Sephora():
             print k
 
     def get_item_url_by_id(self, id):
-        search_url = "https://www.sephora.com/search?keyword=" + str(id)rrrr
+        search_url = "https://www.sephora.com/search?keyword=" + str(id)
         response = self.s.get(
             search_url, headers=self.normal_headers, allow_redirects=False)
         return response.headers['location']
