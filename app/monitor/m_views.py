@@ -3,7 +3,6 @@ from flask import json, jsonify, request, render_template
 from app.monitor.sephora import *
 from app.monitor.sephora import pSephora, sephora_list
 from app.monitor.Nordstrom import pNordstrom, nordstrom_list
-from app.monitro.ippool import ippool
 import time
 from threading import Thread
 from werkzeug.utils import secure_filename
