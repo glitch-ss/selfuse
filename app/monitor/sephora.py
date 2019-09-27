@@ -63,6 +63,7 @@ class Sephora():
             'Connection': 'keep-alive',
             'Host': 'www.sephora.com',
             'Referer': 'https://www.sephora.com/',
+            'x-forwarded-for': '10.182.92.221',
             'Upgrade-Insecure-Requests': '1',
             'TE': 'Trailers',
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0',
@@ -105,7 +106,7 @@ class Sephora():
             print k
 
     def get_item_url_by_id(self, id):
-        search_url = "https://www.sephora.com/search?keyword=" + str(id)
+        search_url = "https://www.sephora.com/search?keyword=" + str(id)rrrr
         response = self.s.get(
             search_url, headers=self.normal_headers, allow_redirects=False)
         return response.headers['location']
