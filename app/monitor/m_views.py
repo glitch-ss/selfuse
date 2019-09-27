@@ -11,9 +11,7 @@ import exceptions
 
 sephora_name_list={}
 nordstrom_name_list={}
-ip_p = ippool()
-ip_p.process()
-my_proxy = ip_p.get_one()
+
 
 def config_output(list_dict):
     output = []

@@ -9,6 +9,7 @@ import logging
 import time
 import datetime
 from mail import lucien801
+from ippool import ippool
 
 logger=logging.getLogger('TEST')
 logger.setLevel(logging.INFO)
@@ -22,8 +23,12 @@ logger.addHandler(fh)
 
 global sephora_list
 global lmail
+global my_proxy
 sephora_list = {}
 lmail = lucien801()
+ip_p = ippool()
+ip_p.process()
+my_proxy = ip_p.get_one()
 
 Sephora_name_dict = {
     2225555: ["TOM FORD", "07"],
@@ -106,12 +111,14 @@ class Sephora():
             print k
 
     def get_item_url_by_id(self, id):
+        global my_proxy
         search_url = "https://www.sephora.com/search?keyword=" + str(id)
         response = self.s.get(
-            search_url, headers=self.normal_headers, allow_redirects=False)
+            search_url, headers=self.normal_headers, allow_redirects=False, proxies = my_proxy)
         return response.headers['location']
 
     def get_item_status_by_id(self, sid):
+        global my_proxy
         id = int(sid)
         item_url = self.get_item_url_by_id(id)
         # tempname=item_url.split('/',-1)[-1].split('-P')[0]
@@ -119,7 +126,7 @@ class Sephora():
         status = color = name = ""
         product_id = item_url.split('-', -1)[-1].split('?')[0]
         status_url = 'https://www.sephora.com/api/users/profiles/current/product/' + product_id
-        response = self.s.get(status_url, headers=self.normal_headers)
+        response = self.s.get(status_url, headers=self.normal_headers, proxies = my_proxy )
         result = json.loads(response.text)
         if id in Sephora_name_dict.keys():
             name = Sephora_name_dict[id][0]
