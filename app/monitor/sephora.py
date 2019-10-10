@@ -9,7 +9,7 @@ import logging
 import time
 import datetime
 from mail import lucien801
-from ippool import ippool
+#from ippool import ippool
 
 logger=logging.getLogger('TEST')
 logger.setLevel(logging.INFO)
@@ -26,9 +26,10 @@ global lmail
 global my_proxy
 sephora_list = {}
 lmail = lucien801()
-ip_p = ippool()
-ip_p.process()
-my_proxy = ip_p.get_one()
+#ip_p = ippool()
+#ip_p.process()
+#my_proxy = ip_p.get_one()
+my_proxy= None
 
 Sephora_name_dict = {
     2225555: ["TOM FORD", "07"],
@@ -42,6 +43,7 @@ Sephora_name_dict = {
     2283166: ["Armani", "206"],
     2268654: ["NARS", "Translucent Crystal"],
     1945187: ["YSL", "Parfum--Mini Black Opium"],
+    2276012: ["Armani", "package"],
 }
 
 
@@ -113,9 +115,12 @@ class Sephora():
     def get_item_url_by_id(self, id):
         global my_proxy
         search_url = "https://www.sephora.com/search?keyword=" + str(id)
-        response = self.s.get(
+        try:
+            response = self.s.get(
             search_url, headers=self.normal_headers, allow_redirects=False, proxies = my_proxy)
-        return response.headers['location']
+            return response.headers['location']
+        except Exception, e:
+            return None
 
     def get_item_status_by_id(self, sid):
         global my_proxy
@@ -124,35 +129,41 @@ class Sephora():
         # tempname=item_url.split('/',-1)[-1].split('-P')[0]
         #name = tempname.replace('-', ' ')
         status = color = name = ""
-        product_id = item_url.split('-', -1)[-1].split('?')[0]
-        status_url = 'https://www.sephora.com/api/users/profiles/current/product/' + product_id
-        response = self.s.get(status_url, headers=self.normal_headers, proxies = my_proxy )
-        result = json.loads(response.text)
-        if id in Sephora_name_dict.keys():
-            name = Sephora_name_dict[id][0]
-            color = Sephora_name_dict[id][1]
+        if item_url != None:
+            product_id = item_url.split('-', -1)[-1].split('?')[0]
+            status_url = 'https://www.sephora.com/api/users/profiles/current/product/' + product_id
+            response = self.s.get(status_url, headers=self.normal_headers, proxies = my_proxy )
+            result = json.loads(response.text)
+            if id in Sephora_name_dict.keys():
+                name = Sephora_name_dict[id][0]
+                color = Sephora_name_dict[id][1]
+            else:
+                if 'ymalSkus' in result.keys():
+                    name = result['ymalSkus'][0]['brandName']
+                elif 'ancillarySkus' in result.keys():
+                    name = result['ancillarySkus'][0]['brandName']
+            if 'regularChildSkus' in result.keys():
+                for item in result['regularChildSkus']:
+                    if item['skuId'] == str(id):
+                        if id not in Sephora_name_dict.keys():
+                            try:
+                                u = item['alternateImages'][1]['altText']
+                                if 'Lipstick ' in u:
+                                    u = u.split('Lipstick ')[1]
+                                    color = u.split(' ', -1)[1]
+                                else:
+                                    color = ""
+                            except Exception, e:
+                                print id
+                                print e
+                        status = item['actionFlags']['backInStockReminderStatus']
+            else:
+                status = result['currentSku']['actionFlags']['backInStockReminderStatus']
         else:
-            if 'ymalSkus' in result.keys():
-                name = result['ymalSkus'][0]['brandName']
-            elif 'ancillarySkus' in result.keys():
-                name = result['ancillarySkus'][0]['brandName']
-        if 'regularChildSkus' in result.keys():
-            for item in result['regularChildSkus']:
-                if item['skuId'] == str(id):
-                    if id not in Sephora_name_dict.keys():
-                        try:
-                            u = item['alternateImages'][1]['altText']
-                            if 'Lipstick ' in u:
-                                u = u.split('Lipstick ')[1]
-                                color = u.split(' ', -1)[1]
-                            else:
-                                color = ""
-                        except Exception, e:
-                            print id
-                            print e
-                    status = item['actionFlags']['backInStockReminderStatus']
-        else:
-            status = result['currentSku']['actionFlags']['backInStockReminderStatus']
+            if id in Sephora_name_dict.keys():
+                name = Sephora_name_dict[id][0]
+                color = Sephora_name_dict[id][1]
+            status = "inactive"
         return [status, name, color]
 
 

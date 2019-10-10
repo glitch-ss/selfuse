@@ -5,7 +5,6 @@ import requests
 import random
 
 
-
 class ippool():
     def __init__(self):
         self.headers = {
@@ -19,6 +18,7 @@ class ippool():
             'Upgrade-Insecure-Requests':'1',
             'User-Agent':'Mozilla/5.0 (Windows NT 10.0; …) Gecko/20100101 Firefox/69.0'
         }
+        self.soup = ""
         self.ip_list = []
         self.page_list = []
         self.s = requests.Session()
@@ -55,6 +55,8 @@ class ippool():
 
     def process(self):
         self.get_soup()
+        if self.soup=="":
+            return []
         self.get_page(self.soup)
         for page in self.page_list:
             self.update_url()

@@ -18,17 +18,17 @@ fh.setFormatter(formatter)
 logger.addHandler(fh)
 
 global my_proxy  
-global nordstrom_list
+global macys_list
 global lmail
-nordstrom_list = {}
+macys_list = {}
 lmail = lucien801()
-#my_proxy=None
+my_proxy=None
 name_list={
     4966688: "CHANEL ximiannai",
     5419480: "KIEHL'S taozhuang",
 }
 
-class Nordstrom():
+class Macys():
     def __init__(self, url=None):
         self.basket_headers={
             'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -36,7 +36,7 @@ class Nordstrom():
             'Accept-Encoding':'gzip, deflate, br',
             'Cache-Control':'max-age=0',
             'Connection':'keep-alive',
-            'Host':'www.sephora.com',
+            'Host':'www.macys.com',
             'Upgrade-Insecure-Requests':'1',
             'Referer':'https://www.sephora.com/basket',
             'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0',
@@ -47,10 +47,8 @@ class Nordstrom():
             'Accept-Encoding':'gzip, deflate, br',
             'Accept-Language':'zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2',
             'Connection':'keep-alive',
-            'Cache-Control':'max-age=0',
-            'Host':'shop.nordstrom.com',
+            'Host':'www.macys.com',
             'Upgrade-Insecure-Requests':'1',
-            'TE':'Trailers',
             'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0',
             }
         self.post_headers={
@@ -59,7 +57,7 @@ class Nordstrom():
             'Accept-Language':'zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2',
             'Accept-Encoding':'gzip, deflate, br',
             "Content-Type": "text/plain;charset=UTF-8",
-            'Host':'www.sephora.com',
+            'Host':'www.macys.com',
             'Origin':'https://www.sephora.com',
             'Refer':'https://www.sephora.com',
             'Connection':'keep-alive',
@@ -77,13 +75,13 @@ class Nordstrom():
         if self.ID in name_list.keys():
             self.name = name_list[self.ID]
         else:
-            self.name = self.get_soup().find_all('span', attrs={'class':'_2JGWw'})[0].get_text()
+            self.name = self.get_soup().find_all('a', attrs={'class':'c-reverse-link'})[0].get_text().strip()
         print self.name
 
     def get_id(self,):
         if '?' in self.url:
-            self.url = self.url.split('?')[0]
-        item_id = self.url.split('/', -1)[-1]
+            temp_url = self.url.split('?')[1]
+        item_id = temp_url.split('&', -1)[0].split('=')[1]
         return item_id
 
     def get_soup(self):
@@ -103,12 +101,12 @@ class Nordstrom():
         if color == "":
             color = None
         if color is None:
-            add_button = soup.find_all('button', attrs={'class':'_2xKC5'})
+            add_button = soup.find_all('p', attrs={'class':'p-not-avail-lbl'})
             if len(add_button) > 0:
-                return True
-            else:
                 return False
-        else:
+            else:
+                return True
+        '''else:
             color_ul = soup.find_all('ul', attrs={'class':'_1aALu'})[0]
             color_ils = color_ul.contents
             for item in color_ils:
@@ -116,11 +114,11 @@ class Nordstrom():
             if color in color_list:
                 return True
             else:
-                return False
+                return False'''
 
-class pNordstrom(Nordstrom):
+class pMacys(Macys):
     def __init__(self, url, color):
-        Nordstrom.__init__(self, url)
+        Macys.__init__(self, url)
         if color is None:
             self.color = ""
         else:
@@ -129,28 +127,28 @@ class pNordstrom(Nordstrom):
         self.status = self.get_status_by_url(self.color)
         self.info = [self.ID, self.name + ' ' + str(self.color), self.url, str(self.status)]
         print self.info
-        logger.info('Nordstrom {0} the status is {1}'.format(self.ID, self.status))
-        nordstrom_list[self.ID] = self.info
+        logger.info('Macys {0} the status is {1}'.format(self.ID, self.status))
+        macys_list[self.ID] = self.info
 
     def process(self):
-        global nordstrom_list
+        global macys_list
         global lmail
         count = 0
-        while self.ID in nordstrom_list:
+        while self.ID in macys_list:
             if count == 100:
                 count = 0
-                print "Nordstrom {0} is ongoing".format(self.ID)
+                print "Macys {0} is ongoing".format(self.ID)
             count += 1
             time.sleep(5)
             try:
                 status = self.get_status_by_url(self.color)
                 if status != self.status:
                     self.status = status
-                    nordstrom_list[self.ID] = self.info
-                    logging.info('Nordstrom {0} {1} the status change to {2}'.format(self.name, self.color, self.status))
+                    macys_list[self.ID] = self.info
+                    logging.info('Macys {0} {1} the status change to {2}'.format(self.name, self.color, self.status))
                     if status==True:
-                        m = '{2} Nordstrom {0} {1} the status change to available \n {3}'.format(self.name, self.color, datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), self.url)
-                        lmail.sm('Nordstrom', m)
+                        m = '{2} Macys {0} {1} the status change to available \n {3}'.format(self.name, self.color, datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), self.url)
+                        lmail.sm('Macys', m)
                 self.info[3]=str(status)
             except Exception, e:
                 print self.ID

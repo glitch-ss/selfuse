@@ -38,6 +38,7 @@
 						    	<select name='band' class="band form-control">
 									<option value='sephora'>Sephora</option>
 									<option value='nordstrom'>Nordstrom</option>
+									<option value='macys'>Macys</option>
 								</select>
 							</div>
 							<div class="form-group">
@@ -126,13 +127,13 @@
     								</tr>
     							</thead>
     							<tbody>
-    								{% for i in nordstrom_list[1] %}
-    								{% if nordstrom_list[1][i][3]=="BUY" %}
-    								<tr id='{{nordstrom_list[1][i][0]}}' style=background-color:#7ec699>
+    								{% for i in macys_list[0] %}
+    								{% if macys_list[0][i][3]=="BUY" %}
+    								<tr id='{{macys_list[0][i][0]}}' style=background-color:#7ec699>
     								{% else %}
-    								<tr id='{{nordstrom_list[1][i][0]}}'>
+    								<tr id='{{macys_list[0][i][0]}}'>
     								{% endif %}
-    									<td><div>{{nordstrom_list[1][i][0]}}</div></td><td><div><a href="{{nordstrom_list[1][i][2]}}">{{nordstrom_list[1][i][1]}}</a></div></td><td class="status"><span>{{nordstrom_list[1][i][3]}}</span><button class="del btn btn-dark btn-sm" style="display:none">delete</button></td></tr>
+    									<td><div>{{macys_list[0][i][0]}}</div></td><td><div><a href="{{macys_list[0][i][2]}}">{{macys_list[0][i][1]}}</a></div></td><td class="status"><span>{{macys_list[0][i][3]}}</span><button class="del btn btn-dark btn-sm" style="display:none">delete</button></td></tr>
     								{% endfor %}
     							</tbody>
     						</table>
