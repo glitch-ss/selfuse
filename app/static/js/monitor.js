@@ -1,4 +1,7 @@
 $(document).ready(function(){
+	$('#get_key_list').click(function(){
+		
+	})
 	$('.band').change(function(){
 		if ($(this).val()=='nordstrom'){
 			$('.color').removeClass('hidden')

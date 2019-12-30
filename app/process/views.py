@@ -2,47 +2,16 @@
 
 from app import app
 from flask import json, jsonify, request, render_template
-from app.process.express import Express
+from app.process.express import Express, price_dict
 from app.process.mk import *
 from bs4 import UnicodeDammit
+from datetime import datetime
+import pandas as pd
+import os
 import hashlib
 import time
 import threading
 import exceptions
-price_dict = {
-    u'北京市': 8,
-    u'上海市': 6,
-    u'江苏省': 6,
-    u'安徽省': 6,
-    u'浙江省': 6,
-    u'山东省': 8,
-    u'广东省': 8,
-    u'福建省': 8,
-    u'湖南省': 8,
-    u'湖北省': 8,
-    u'江西省': 8,
-    u'天津市': 8,
-    u'河南省': 8,
-    u'河北省': 8,
-    u'山西省': 8,
-    u'四川省': 8,
-    u'陕西省': 8,
-    u'海南省': 8,
-    u'重庆市': 8,
-    u'辽宁省': 8,
-    u'吉林省': 8,
-    u'云南省': 8,
-    u'广西壮族自治区': 8,
-    u'宁夏回族自治区': 8,
-    u'贵州省': 8,
-    u'黑龙江省': 8,
-    u'宁夏省': 10,
-    u'青海省': 10,
-    u'甘肃省': 10,
-    u'内蒙古自治区': 10,
-    u'新疆维吾尔自治区': 10,
-    u'西藏自治区': 10,
-}
 stop_id = []
 inspect_sephora_list = {}
 inspect_mk_list = {}
@@ -91,13 +60,23 @@ def express():
         print 'erro'
     # key='05-12'
     if date is not None and "-" in date:
-        print 'e'
-        a = Express('13162580787', 'atobefuji')
-        list = a.get_history_list(date)
-        print len(list)
-        for i in list:
-            b = a.get_info(i)
-            name_list.append(b)
+        file_path = 'app/static/file/excel/' + date
+        if os.path.exists(file_path):
+            print os.path.exists(file_path)
+            df = pd.read_excel(file_path)
+            for item in df.values:
+                item.remove(item[0])
+                name_list.append(item)
+        else:
+            print 'ssss'
+            a = Express('13162580787', 'atobefuji')
+            lists = a.get_history_list(date)
+            print len(lists)
+            for i in lists:
+                b = a.get_info(i)
+                name_list.append(b)
+            print 'generate'
+            a.generate_file(date, name_list)
     return render_template('express.html', name_list=name_list)
 
 
@@ -130,17 +109,39 @@ def innerexpress():
     # key='05-12'
     print type(date)
     if date is not None and "-" in date:
-        a = Express('13162580787', 'atobefuji')
-        list = a.get_history_list(date)
-        print len(list)
-        for i in list:
-            b = a.get_info(i)
-            name_list.append(b)
+        mon = date.split('-')[0]
+        day = date.split('-')[1]
+        now_year = str(datetime.now().year)
+        file_path = 'app/static/file/excel/' + now_year
+        if not os.path.exists(file_path):
+            print 'create menu'
+            os.makedirs(file_path)
+        file_path = file_path + '/' + mon
+        if not os.path.exists(file_path):
+            print 'create menu'
+            os.makedirs(file_path)
+        file_path = file_path + '/' + day
+        if os.path.exists(file_path):
+            print os.path.exists(file_path)
+            df = pd.read_excel(file_path)
+            for item in df.values:
+                item = list(item)
+                item.remove(item[0])
+                name_list.append(item)
+        else:
+            a = Express('13162580787', 'atobefuji')
+            lists = a.get_history_list(date)
+            print len(lists)
+            for i in lists:
+                b = a.get_info(i)
+                name_list.append(b)
+            if len(lists) > 0:
+                a.generate_file(date, name_list)
     print len(name_list)
-    price_list = a.province_list
-    for a in price_list:
-        print a.encode('gbk')
-        price += price_dict[a]
+    for a in name_list:
+        # print a.encode('gbk')
+        print a
+        price += int(a[5])
     return jsonify({'name_list': name_list, 'price': price})
 
 
@@ -162,3 +163,20 @@ def wx():
         return echostr
     else:
         return ""
+
+
+@app.route('/cz', methods=['GET', 'POST'])
+def cz():
+    method = request.method
+    if method == 'POST':
+        page = request.form.get('page')
+        if page == 'market':
+            return jsonify({'market_list': [['1', 'iso1', '第一个iso，请轻一点'], ['2', 'iso2', '第二个iso， 随便草']]})
+        elif page == 'doc':
+            return jsonify({'doc': {'1': ['呵呵哒', '/static/file/video/test.MOV'],
+                                    '2': ['我是警察', '/static/file/video/test.MOV']}})
+        elif page == 'myrpa':
+            return jsonify({'myrpa': {'1': {'name': 'iso1', 'instance': [['0', '实例名1', '3天', 'http://www.baidu.com'], ['1', '实例名2', '已到期']]},
+                                      '2': {'name': 'iso2', 'instance': [['3', '实例名1', '5天', 'http://   www.baidu.com'], ['1', '实例名2', '6天']]}}})
+    print "cz"
+    return render_template("self.html")

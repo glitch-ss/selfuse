@@ -14,7 +14,7 @@ from mail import lucien801
 logger=logging.getLogger('TEST')
 logger.setLevel(logging.INFO)
 fh = logging.FileHandler("./app/static/log/test.log")
-formatter="%(asctime)s %(levelname)s:%(message)s"
+formatter=logging.Formatter("%(asctime)s %(levelname)s: %(message)s")
 fh.setFormatter(formatter)
 logger.addHandler(fh)
 
@@ -32,6 +32,10 @@ lmail = lucien801()
 my_proxy= None
 
 Sephora_name_dict = {
+    2313070: ['guerlain', 'package'],
+    2283208: ['Armani', '524'],
+    2293546: ['nars', 'nopage'],
+    2269769: ['fresh', 'nopage'],
     2225555: ["TOM FORD", "07"],
     2225548: ["TOM FORD", "05"],
     2236099: ["Givenchy", "37"],
@@ -92,6 +96,11 @@ class Sephora():
             'x-o1na2nub-d': '0',
             'x-o1na2nub-uniqueStateKey': 'A4t2hbZqAQAAW-9GLzoeelVYB64Wzg7vRWTTqlgeWWzyldc95q7cgkg1UooGAawUMfCuchAEwH8AAEB3AAAAAA=='
         }
+        self.item_url = None
+        self.status_url = None
+        self.product_id = None
+        self.name = ''
+        self.product_id_list = {}
         self.data = {'login': 'lucien821@163.com', 'password': 'atobefuji',
                      'isKeepSignedIn': 'true', 'loginForCheckout': 'true'}
         self.s = requests.Session()
@@ -118,21 +127,51 @@ class Sephora():
         try:
             response = self.s.get(
             search_url, headers=self.normal_headers, allow_redirects=False, proxies = my_proxy)
-            return response.headers['location']
+            #print response.headers.keys()
+            if 'Location' in response.headers.keys():
+                print 'hahaha', id
+                self.item_url = response.headers['location']
+                self.product_id = self.item_url.split('-', -1)[-1].split('?')[0]
+                return self.product_id
+            else:
+                search_url = "https://www.sephora.com/api/catalog/search?type=keyword&q={0}&content=true&includeRegionsMap=true".format(id)
+                try:
+                    response = self.s.get(
+                        search_url, headers=self.normal_headers, allow_redirects=False, proxies = my_proxy)
+                    result = json.loads(response.text)
+
+                    if 'products' in result.keys():
+                        for item in result['products']:
+                            self.product_id = item['productId']
+                            if self.product_id is not None or self.product_id != '':
+                                self.name = item['productName']
+                                self.item_url = "https://www.sephora.com/product/{0}-{1}".format(self.name.lower().replace(' ', '-'), self.product_id)
+                                self.product_id_list[self.product_id] = [item['targetUrl'], self.item_url]
+                                if 'skuId' not in item['targetUrl']:
+                                    return self.product_id
+                    return None
+                except Exception, e:
+                    print e
+                    print '{0} get product error'.format(id)
+                    return None
         except Exception, e:
+            print e
+            print '{0} get product error'.format(id)
             return None
 
     def get_item_status_by_id(self, sid):
         global my_proxy
         id = int(sid)
-        item_url = self.get_item_url_by_id(id)
         # tempname=item_url.split('/',-1)[-1].split('-P')[0]
         #name = tempname.replace('-', ' ')
         status = color = name = ""
-        if item_url != None:
-            product_id = item_url.split('-', -1)[-1].split('?')[0]
-            status_url = 'https://www.sephora.com/api/users/profiles/current/product/' + product_id
-            response = self.s.get(status_url, headers=self.normal_headers, proxies = my_proxy )
+
+        if self.product_id is None:
+            self.get_item_url_by_id(id)
+        else:
+            if self.status_url is None:
+                self.status_url = 'https://www.sephora.com/api/users/profiles/current/product/' + self.product_id
+            response = self.s.get(self.status_url, headers=self.normal_headers, proxies = my_proxy )
             result = json.loads(response.text)
             if id in Sephora_name_dict.keys():
                 name = Sephora_name_dict[id][0]
@@ -157,13 +196,17 @@ class Sephora():
                                 print id
                                 print e
                         status = item['actionFlags']['backInStockReminderStatus']
-            else:
+            elif 'currentSku' in result.keys():
                 status = result['currentSku']['actionFlags']['backInStockReminderStatus']
-        else:
+            else:
+                status = None
+        if status == "":
             if id in Sephora_name_dict.keys():
                 name = Sephora_name_dict[id][0]
                 color = Sephora_name_dict[id][1]
-            status = "inactive"
+                status = "inactive"
+        if name is None or name == '':
+            name = self.name
         return [status, name, color]
 
 
@@ -173,9 +216,9 @@ class pSephora(Sephora):
         global sephora_list
         self.ID = ID
         print self.ID
-        self.url = self.get_item_url_by_id(self.ID)
         self.status, self.name, self.color = self.get_item_status_by_id(
             self.ID)
+        self.url = self.item_url
         if self.status == 'notApplicable':
             s_status = 'BUY'
         else:
@@ -189,6 +232,7 @@ class pSephora(Sephora):
         global sephora_list
         global lmail
         count = 0
+        print 'test'
         while self.ID in sephora_list.keys():
             if count == 100:
                 count = 0

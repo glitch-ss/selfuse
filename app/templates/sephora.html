@@ -39,6 +39,7 @@
 									<option value='sephora'>Sephora</option>
 									<option value='nordstrom'>Nordstrom</option>
 									<option value='macys'>Macys</option>
+                                    <option value='esteelaud'>EsteeLaud</option>
 								</select>
 							</div>
 							<div class="form-group">
@@ -63,82 +64,176 @@
     	<div class='middle-section'>
     		<div class='container mt-5'>
     			<div class='content'>
-    				<div class='row result-list '>
-    					<div class='col-md-3 left-content'>
-    						<table class="sephora0 table table-bordered table-hover">
-    							<thead>
-    								<tr>
-    									<th>ID</th><th class="col-md-6">Name</th><th class="col-md-1">Status</th>
-    								</tr>
-    							</thead>
-    							<tbody>
-    								{% for i in sephora_list[0] %}
-    								{% if sephora_list[0][i][3]=="BUY" %}
-    								<tr id='{{sephora_list[0][i][0]}}' style=background-color:#7ec699>
-    								{% else %}
-    								<tr id='{{sephora_list[0][i][0]}}'>
-    								{% endif %}
-    									<td><div>{{sephora_list[0][i][0]}}</div></td><td><div><a href="{{sephora_list[0][i][2]}}">{{sephora_list[0][i][1]}}</a></div></td><td class="status"><span>{{sephora_list[0][i][3]}}</span><button class="del btn btn-dark btn-sm" style="display:none">delete</button></td></tr>
-    								{% endfor %}
-    							</tbody>
-    						</table>
-    					</div>
-    					<div class='col-md-3 right-content'>
-    						<table class="sephora1 table table-bordered table-hover">
-    							<thead>
-    								<th>ID</th><th class="col-md-6">Name</th><th class="col-md-1">Status</th>
-    								</tr>
-    							</thead>
-    							<tbody>
-    								{% for i in sephora_list[1] %}
-    								{% if sephora_list[1][i][3]=="BUY" %}
-    								<tr id='{{sephora_list[1][i][0]}}' style=background-color:#7ec699>
-    								{% else %}
-    								<tr id='{{sephora_list[1][i][0]}}'>
-    								{% endif %}
-    									<td><div>{{sephora_list[1][i][0]}}</div></td><td><div><a href="{{sephora_list[1][i][2]}}">{{sephora_list[1][i][1]}}</a></div></td><td class="status"><span>{{sephora_list[1][i][3]}}</span><button class="del btn btn-dark btn-sm" style="display:none">delete</button></td></tr>
-    								{% endfor %}
-    							</tbody>
-    						</table>
-    					</div>
-    					<div class='col-md-3 left-content'>
-    						<table class="nordstrom0 table table-bordered table-hover">
-    							<thead>
-    								<tr>
-    									<th>ID</th><th class="col-md-6">Name</th><th class="col-md-1">Status</th>
-    								</tr>
-    							</thead>
-    							<tbody>
-    								{% for i in nordstrom_list[0] %}
-    								{% if nordstrom_list[0][i][3]=="BUY" %}
-    								<tr id='{{nordstrom_list[0][i][0]}}' style=background-color:#7ec699>
-    								{% else %}
-    								<tr id='{{nordstrom_list[0][i][0]}}'>
-    								{% endif %}
-    									<td><div>{{nordstrom_list[0][i][0]}}</div></td><td><div><a href="{{nordstrom_list[0][i][2]}}">{{nordstrom_list[0][i][1]}}</a></div></td><td class="status"><span>{{nordstrom_list[0][i][3]}}</span><button class="del btn btn-dark btn-sm" style="display:none">delete</button></td></tr>
-    								{% endfor %}
-    							</tbody>
-    						</table>
-    					</div>
-    					<div class='col-md-3 right-content'>
-    						<table class="nordstrom1 table table-bordered table-hover">
-    							<thead>
-    								<th>ID</th><th class="col-md-6">Name</th><th class="col-md-1">Status</th>
-    								</tr>
-    							</thead>
-    							<tbody>
-    								{% for i in macys_list[0] %}
-    								{% if macys_list[0][i][3]=="BUY" %}
-    								<tr id='{{macys_list[0][i][0]}}' style=background-color:#7ec699>
-    								{% else %}
-    								<tr id='{{macys_list[0][i][0]}}'>
-    								{% endif %}
-    									<td><div>{{macys_list[0][i][0]}}</div></td><td><div><a href="{{macys_list[0][i][2]}}">{{macys_list[0][i][1]}}</a></div></td><td class="status"><span>{{macys_list[0][i][3]}}</span><button class="del btn btn-dark btn-sm" style="display:none">delete</button></td></tr>
-    								{% endfor %}
-    							</tbody>
-    						</table>
-    					</div>
-    				</div>
+                    <div class="row">
+                        <ul id="myTab" class="nav nav-tabs">
+                            <li class="active">
+                                <a href="#Sephora" data-toggle="tab">
+                                    Sephora
+                                </a>
+                            </li>
+                            <li><a href="#Nordstrom" data-toggle="tab">Nordstrom</a></li>
+                            <li><a href="#Macys" data-toggle="tab">Macys</a></li>
+                            <li><a href="#Esteelaud" data-toggle="tab">Esteelaud</a></li>
+                        </ul>
+                    </div>
+                    <div class="tab-content">
+        				<div class='row result-list tab-pane fade in active', id='Sephora'>
+        					<div class='col-md-3 left-content'>
+        						<table class="sephora0 table table-bordered table-hover">
+        							<thead>
+        								<tr>
+        									<th>ID</th><th class="col-md-6">Name</th><th class="col-md-1">Status</th>
+        								</tr>
+        							</thead>
+        							<tbody>
+        								{% for i in sephora_list[0] %}
+        								{% if sephora_list[0][i][3]=="BUY" %}
+        								<tr id='{{sephora_list[0][i][0]}}' style=background-color:#7ec699>
+        								{% else %}
+        								<tr id='{{sephora_list[0][i][0]}}'>
+        								{% endif %}
+        									<td><div>{{sephora_list[0][i][0]}}</div></td><td><div><a href="{{sephora_list[0][i][2]}}">{{sephora_list[0][i][1]}}</a></div></td><td class="status"><span>{{sephora_list[0][i][3]}}</span><button class="del btn btn-dark btn-sm" style="display:none">delete</button></td></tr>
+        								{% endfor %}
+        							</tbody>
+        						</table>
+        					</div>
+        					<div class='col-md-3 right-content'>
+        						<table class="sephora1 table table-bordered table-hover">
+        							<thead>
+        								<th>ID</th><th class="col-md-6">Name</th><th class="col-md-1">Status</th>
+        								</tr>
+        							</thead>
+        							<tbody>
+        								{% for i in sephora_list[1] %}
+        								{% if sephora_list[1][i][3]=="BUY" %}
+        								<tr id='{{sephora_list[1][i][0]}}' style=background-color:#7ec699>
+        								{% else %}
+        								<tr id='{{sephora_list[1][i][0]}}'>
+        								{% endif %}
+        									<td><div>{{sephora_list[1][i][0]}}</div></td><td><div><a href="{{sephora_list[1][i][2]}}">{{sephora_list[1][i][1]}}</a></div></td><td class="status"><span>{{sephora_list[1][i][3]}}</span><button class="del btn btn-dark btn-sm" style="display:none">delete</button></td></tr>
+        								{% endfor %}
+        							</tbody>
+        						</table>
+        					</div>
+        				</div>
+                        <div class='row result-list tab-pane fade in active', id='Nordstrom'>
+                            <div class='col-md-3 left-content'>
+                                <table class="nordstrom0 table table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th><th class="col-md-6">Name</th><th class="col-md-1">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for i in nordstrom_list[0] %}
+                                        {% if nordstrom_list[0][i][3]=="BUY" %}
+                                        <tr id='{{nordstrom_list[0][i][0]}}' style=background-color:#7ec699>
+                                        {% else %}
+                                        <tr id='{{nordstrom_list[0][i][0]}}'>
+                                        {% endif %}
+                                            <td><div>{{nordstrom_list[0][i][0]}}</div></td><td><div><a href="{{nordstrom_list[0][i][2]}}">{{nordstrom_list[0][i][1]}}</a></div></td><td class="status"><span>{{nordstrom_list[0][i][3]}}</span><button class="del btn btn-dark btn-sm" style="display:none">delete</button></td></tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class='col-md-3 right-content'>
+                                <table class="nordstrom0 table table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th><th class="col-md-6">Name</th><th class="col-md-1">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for i in nordstrom_list[1] %}
+                                        {% if nordstrom_list[1][i][3]=="BUY" %}
+                                        <tr id='{{nordstrom_list[1][i][1]}}' style=background-color:#7ec699>
+                                        {% else %}
+                                        <tr id='{{nordstrom_list[1][i][1]}}'>
+                                        {% endif %}
+                                            <td><div>{{nordstrom_list[1][i][1]}}</div></td><td><div><a href="{{nordstrom_list[1][i][2]}}">{{nordstrom_list[1][i][1]}}</a></div></td><td class="status"><span>{{nordstrom_list[1][i][3]}}</span><button class="del btn btn-dark btn-sm" style="display:none">delete</button></td></tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class='row result-list tab-pane fade in active', id='Macys'>
+                            <div class='col-md-3 left-content'>
+                                <table class="nordstrom1 table table-bordered table-hover">
+                                    <thead>
+                                        <th>ID</th><th class="col-md-6">Name</th><th class="col-md-1">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for i in macys_list[0] %}
+                                        {% if macys_list[0][i][3]=="BUY" %}
+                                        <tr id='{{macys_list[0][i][0]}}' style=background-color:#7ec699>
+                                        {% else %}
+                                        <tr id='{{macys_list[0][i][0]}}'>
+                                        {% endif %}
+                                            <td><div>{{macys_list[0][i][0]}}</div></td><td><div><a href="{{macys_list[0][i][2]}}">{{macys_list[0][i][1]}}</a></div></td><td class="status"><span>{{macys_list[0][i][3]}}</span><button class="del btn btn-dark btn-sm" style="display:none">delete</button></td></tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class='col-md-3 right-content'>
+                                <table class="nordstrom1 table table-bordered table-hover">
+                                    <thead>
+                                        <th>ID</th><th class="col-md-6">Name</th><th class="col-md-1">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for i in macys_list[1] %}
+                                        {% if macys_list[1][i][3]=="BUY" %}
+                                        <tr id='{{macys_list[1][i][1]}}' style=background-color:#7ec699>
+                                        {% else %}
+                                        <tr id='{{macys_list[1][i][1]}}'>
+                                        {% endif %}
+                                            <td><div>{{macys_list[1][i][1]}}</div></td><td><div><a href="{{macys_list[1][i][2]}}">{{macys_list[1][i][1]}}</a></div></td><td class="status"><span>{{macys_list[1][i][3]}}</span><button class="del btn btn-dark btn-sm" style="display:none">delete</button></td></tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class='row result-list tab-pane fade in active', id='Esteelaud'>
+                            <div class='col-md-3 left-content'>
+                                <table class="est0 table table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th><th class="col-md-6">Name</th><th class="col-md-1">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for i in est_list[0] %}
+                                        {% if est_list[0][i][3]=="BUY" %}
+                                        <tr id='{{est_list[0][i][0]}}' style=background-color:#7ec699>
+                                        {% else %}
+                                        <tr id='{{est_list[0][i][0]}}'>
+                                        {% endif %}
+                                            <td><div>{{est_list[0][i][0]}}</div></td><td><div><a href="{{est_list[0][i][2]}}">{{est_list[0][i][1]}}</a></div></td><td class="status"><span>{{est_list[0][i][3]}}</span><button class="del btn btn-dark btn-sm" style="display:none">delete</button></td></tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class='col-md-3 right-content'>
+                                <table class="est1 table table-bordered table-hover">
+                                    <thead>
+                                        <th>ID</th><th class="col-md-6">Name</th><th class="col-md-1">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for i in est_list[1] %}
+                                        {% if est_list[1][i][3]=="BUY" %}
+                                        <tr id='{{est_list[1][i][0]}}' style=background-color:#7ec699>
+                                        {% else %}
+                                        <tr id='{{est_list[1][i][0]}}'>
+                                        {% endif %}
+                                            <td><div>{{est_list[1][i][0]}}</div></td><td><div><a href="{{est_list[1][i][2]}}">{{est_list[1][i][1]}}</a></div></td><td class="status"><span>{{est_list[1][i][3]}}</span><button class="del btn btn-dark btn-sm" style="display:none">delete</button></td></tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
     			</div>
     		</div>
     	</div>

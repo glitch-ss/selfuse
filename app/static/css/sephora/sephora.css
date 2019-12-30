@@ -11,6 +11,12 @@
 	width: 100%;
 	
 }
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus{
+	color: black;
+	background-color:rgba(206, 142, 50, 1);
+	border: 1px solid ##DDA562;
+}
+
 .navigation{
 	background-color: #333;
 	color:#DDA562;

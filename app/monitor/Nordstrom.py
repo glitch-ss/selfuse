@@ -13,7 +13,7 @@ from mail import lucien801
 logger=logging.getLogger('TEST')
 logger.setLevel(logging.INFO)
 fh = logging.FileHandler("./app/static/log/test.log")
-formatter="%(asctime)s %(levelname)s:%(message)s"
+formatter=logging.Formatter("%(asctime)s %(levelname)s: %(message)s")
 fh.setFormatter(formatter)
 logger.addHandler(fh)
 
@@ -83,7 +83,9 @@ class Nordstrom():
     def get_id(self,):
         if '?' in self.url:
             self.url = self.url.split('?')[0]
-        item_id = self.url.split('/', -1)[-1]
+        item_id = self.url.split('/', -1)
+        if not item_id[-1].isnumeric():
+            item_id = item_id[-2]
         return item_id
 
     def get_soup(self):
@@ -126,6 +128,10 @@ class pNordstrom(Nordstrom):
         else:
             self.color = color
         self.ID = str(self.ID) + str(self.color)
+        if self.ID in nordstrom_list:
+            self.duplicate = True
+        else:
+            self.duplicate = False
         self.status = self.get_status_by_url(self.color)
         self.info = [self.ID, self.name + ' ' + str(self.color), self.url, str(self.status)]
         print self.info
@@ -135,6 +141,8 @@ class pNordstrom(Nordstrom):
     def process(self):
         global nordstrom_list
         global lmail
+        if self.duplicate:
+            return
         count = 0
         while self.ID in nordstrom_list:
             if count == 100:

@@ -17,7 +17,7 @@ class lucien801():
         self.subject = band
         self.message = MIMEText(message,'plain','utf-8')
         self.message['From'] = Header('lucien801@sina.com')
-        self.message['To'] = Header('<380589027@qq.com>','utf-8')
+        self.message['To'] = Header('<547076180@qq.com>','utf-8')
         self.message['Subject']=Header(self.subject,'utf-8')
         smtpObj=smtplib.SMTP()
         smtpObj.connect(self.mail_host,25)

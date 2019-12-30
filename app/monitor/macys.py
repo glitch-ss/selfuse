@@ -13,7 +13,7 @@ from mail import lucien801
 logger=logging.getLogger('TEST')
 logger.setLevel(logging.INFO)
 fh = logging.FileHandler("./app/static/log/test.log")
-formatter="%(asctime)s %(levelname)s:%(message)s"
+formatter=logging.Formatter("%(asctime)s %(levelname)s: %(message)s")
 fh.setFormatter(formatter)
 logger.addHandler(fh)
 
@@ -124,6 +124,10 @@ class pMacys(Macys):
         else:
             self.color = color
         self.ID = str(self.ID) + str(self.color)
+        if self.ID in macys_list:
+            self.duplicate = True
+        else:
+            self.duplicate = False
         self.status = self.get_status_by_url(self.color)
         self.info = [self.ID, self.name + ' ' + str(self.color), self.url, str(self.status)]
         print self.info
@@ -133,6 +137,8 @@ class pMacys(Macys):
     def process(self):
         global macys_list
         global lmail
+        if self.duplicate:
+            return
         count = 0
         while self.ID in macys_list:
             if count == 100:

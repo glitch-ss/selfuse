@@ -5,6 +5,42 @@ import chardet
 from bs4 import BeautifulSoup
 import os
 import json
+import pandas as pd
+from datetime import datetime
+price_dict = {
+    u'北京市': 8,
+    u'上海市': 6,
+    u'江苏省': 6,
+    u'安徽省': 6,
+    u'浙江省': 6,
+    u'山东省': 8,
+    u'广东省': 8,
+    u'福建省': 8,
+    u'湖南省': 8,
+    u'湖北省': 8,
+    u'江西省': 8,
+    u'天津市': 8,
+    u'河南省': 8,
+    u'河北省': 8,
+    u'山西省': 8,
+    u'四川省': 8,
+    u'陕西省': 8,
+    u'海南省': 8,
+    u'重庆市': 8,
+    u'辽宁省': 8,
+    u'吉林省': 8,
+    u'云南省': 8,
+    u'广西壮族自治区': 8,
+    u'宁夏回族自治区': 8,
+    u'贵州省': 8,
+    u'黑龙江省': 8,
+    u'宁夏省': 10,
+    u'青海省': 10,
+    u'甘肃省': 10,
+    u'内蒙古自治区': 10,
+    u'新疆维吾尔自治区': 10,
+    u'西藏自治区': 10,
+}
 
 class Express():
     login_page='https://m.kuaidihelp.com/account/login'
@@ -31,9 +67,11 @@ class Express():
             print response.text
     
     def get_history_list(self,date):
+        target_mon = date.split('-')[0]
+        target_day = date.split('-')[1]
         if date=="":
             return []
-        item_list=[]
+        self.item_list={}
         province_list=[]
         self.s.headers['Content-Length']='29'
         self.s.headers['X-Requested-With']='XMLHTTPRequest'
@@ -49,18 +87,39 @@ class Express():
         self.province_list=[]
         for item in self.result:
             if date in item['date']:
-                item_list.append(item['id'])
+                if item['status'] == 1:
+                    continue
+                self.item_list[item['id']] = item['shipping_province']
                 self.province_list.append(item['shipping_province'])
-        data= {'action':'history','page':'2'}
-        try:
-            response = self.s.post('https://m.kuaidihelp.com/order/ajax', data=data, allow_redirects = False)
-            result = json.loads(response.text)['data']['list']
-            for item in result:
-                if date in item['date'] and item not in item_list:
-                    item_list.append(item['id'])
-        except Exception, e:
-            print e
-        return item_list
+        count = 2
+        status = True
+        while status:
+            data= {'action': 'history','page': count}
+            try:
+                print count
+                response = self.s.post('https://m.kuaidihelp.com/order/ajax', data=data, allow_redirects = False)
+                self.result2 = json.loads(response.text)['data']['list']
+                self.result = self.result + self.result2
+                for item in self.result2:
+                    if item['status'] == 1:
+                        continue
+                    item_date = item['date'].split(' ')[0].split('-')
+                    print item_date[0] + '-'+item_date[1]
+                    print date
+                    if int(item_date[0]) > int(target_mon):
+                        status = True
+                    elif int(item_date[1]) >= int(target_day) and int(item_date[0]) == int(target_mon):
+                        status = True
+                    else:
+                        status = False
+                    print status
+                    if date in item['date'] and item not in self.item_list.keys():
+                        self.item_list[item['id']] = item['shipping_province']
+                        self.province_list.append(item['shipping_province'])
+            except Exception, e:
+                print e
+            count += 1
+        return self.item_list.keys()
     
     def get_info(self,id,t=None):
         res=[]
@@ -85,10 +144,15 @@ class Express():
         res.append(name_soup[0].get_text().split('1')[0].strip())
         res.append(weight)
         res.append(phone_num)
-        for item in self.result:
-            if id == item['id']:
-                res.append(item['shipping_province'])
-                break
+        province = self.item_list[id]
+        res.append(province)
+        res.append(price_dict[province])
         return res
 
-        
+    def generate_file(self, date, data):
+        path = 'app/static/file/excel/' + str(datetime.now().year)
+        file = os.listdir(path)
+        print file
+        if date not in file:
+            file = pd.DataFrame(data)
+            file.to_excel(path+'/'+ date.split('-')[0] + '/' + date.split('-')[1], engine='openpyxl')
