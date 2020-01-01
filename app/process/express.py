@@ -106,7 +106,7 @@ class Express():
                     item_date = item['date'].split(' ')[0].split('-')
                     print item_date[0] + '-'+item_date[1]
                     print date
-                    if int(item_date[0]) > int(target_mon):
+                    if int(item_date[0]) - int(target_mon) and abs(int(item_date[0]) - int(target_mon)) < 10:
                         status = True
                     elif int(item_date[1]) >= int(target_day) and int(item_date[0]) == int(target_mon):
                         status = True

@@ -9,13 +9,13 @@ import time
 from threading import Thread
 from werkzeug.utils import secure_filename
 import exceptions
-import MySQLdb
+import mysql.connector
 
 sephora_name_list = {}
 nordstrom_name_list = {}
 macys_name_list = {}
 
-conn = MySQLdb.connect(host='localhost', user='root',
+conn = mysql.connector.connect(host='localhost', user='root',
                        passwd='atobefuji', port=3306, db='stock')
 cursor = conn.cursor()
 
